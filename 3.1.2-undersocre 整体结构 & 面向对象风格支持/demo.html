@@ -15,7 +15,9 @@
 			
 			//_([1,2,3,4,5,4,5,6]).unique(function(){}).map();   //实例对象
 			
-           console.log(_([1,2,3,4,5,4,5,6,"a","A"]).chain().unique().map().value());
+           console.log(_([1,2,3,4,5,4,5,6,"a","A"]).chain().unique(function (target) {
+			   return String.prototype.toLowerCase.apply(target)
+		   }).map().value());
 			
 		</script>
 	</body>
