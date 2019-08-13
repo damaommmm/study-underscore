@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+			function compose() {
+				var _len = arguments.length;
+				var funcs = [];
+				for (var i = 0; i < _len; i++) {
+					funcs[i] = arguments[i];
+				}
+
+				if (funcs.length === 0) {
+					return function(arg) {
+						return arg;
+					}
+				}
+
+				if (funcs.length === 1) {
+					return funcs[0]();
+				}
+                  
+				  
+				 // =>  applyMiddleware.js  => function createStore(){}
+				 // =>  window .devToolsExtension()
+				return funcs.reduce(function(a, b) {
+                      return function(){
+						  return a(b.apply(undefined, arguments));
+					  }
+				});
+			}
+
+
+			
+			let storeEnhancers = compose(
+    applyMiddleware(...middlewares,sagaMiddleware),
+    (window && window .devToolsExtension) ? window .devToolsExtension() : (f) => f);
+           
+		   
+		   //applyMiddleware   ???   function createStore(){}
+		   
+		   
+		   // return a(b.apply(undefined, arguments));
+		   
+		   
+		   
+		   //reudx    API   createStore   目的:   生成一个store
+		   
+		   //const store = createStore(rootReducer, initialState={} ,storeEnhancers);
+		   
+		   
+		   //rootReducer === undefined    state   
+			//preloadedState  ===   初始化  state
+			//enhancer   通过 增强 store   第三方的中间件 数据持久化  异步流的处理  
+		   function createStore(reducer, preloadedState, enhancer) {
+			   
+			   
+		   }
+		   
+		   //源码 
+		   return enhancer(createStore)(reducer, preloadedState)
+		   
+		   //推测
+		   function enhancer(createStore){
+			   return function(reducer, preloadedState){
+				   
+			   }
+		   }
+		   
+		   
+		</script>
+	</body>
+</html>

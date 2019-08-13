@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script src="Redux.js"></script>
+		<script>
+			//state  
+			var object = {
+				text: "this is text"
+			}
+			
+			//reducer
+			function reducer(state = object, action){
+				switch(action.type){
+					case "CAHNGE_OBJECT_TEXT":
+					return {
+						text: action.text
+					}
+				}
+				return state;
+			}
+			
+			//创建一个store
+			var store = Redux.createStore(reducer);  
+			
+			//action
+			setTimeout(function(){
+				//提交了一个请求
+				var action = {
+					type: "CAHNGE_OBJECT_TEXT",
+					text:"this is redux"
+				}
+				store.dispatch(action);
+				var state = store.getState();   
+			},1000);
+			
+			//注册了监听器
+			store.subscribe(function(){
+				console.log("state change ....");
+			});
+		</script>
+	</body>
+</html>
+

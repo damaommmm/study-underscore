@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script src="underscore.js"></script>
+		<script>
+			// _.delay(function(name, age, num) {
+			// 	console.log(num)	
+			// }, 1500, "max", "30", "12345678911");
+
+			function A(data) {
+				return data * 2;  //8
+			}
+
+			function B(data) {
+				return data + 2;  //4
+			}
+
+			function C(data) {
+               return data - 2;  //2
+			}
+			var ret = _.compose(B , A, C); //1: 依次调用 倒叙  2: 上一次执行函数 返回值传递给下一个要执行的函数.
+            console.log(ret(4));
+			//_.compose(fn2, fn1, fn3);
+		</script>
+	</body>
+</html>

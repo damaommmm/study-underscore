@@ -1,12 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
+
 <body>
-    
+    <script>
+        // const arr = [1, 2, 3, 4]
+
+        // console.log(arr.slice(0, 100));
+
+        // var fibonacci = memoize(function (n) {
+        //     return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+        // });
+
+        function memoize(fun, handler) {
+
+            const memory = function (key) {
+                key = handler == null ? key : handler(key)
+                if (!memory.cache.hasOwnProperty(key)) {
+                    memory.cache[key] = fun.call(this, key)
+                }
+                return memory.cache[key]
+            }
+
+            memory.cache = {}
+            return memory
+        }
+
+        var hasher = function () {
+            var n = arguments[0];
+            return n + "max";
+        }
+
+        //这个数列从第3项开始,每一项都等于前两项之和.
+        //1 1  2  3 5 8 13 21 34 .....
+        var fibonacci = memoize(function (n) {
+            return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+        });
+        console.log(fibonacci(10000));
+
+    </script>
 </body>
+
 </html>
