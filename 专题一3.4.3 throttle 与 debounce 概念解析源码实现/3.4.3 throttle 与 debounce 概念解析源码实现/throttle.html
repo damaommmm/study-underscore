@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+
+<body>
+	<div style="height: 3000px;"></div>
+	<script src="throttle.js"></script>
+	<script>
+		var fn = throttle(function () {
+			console.log("hello throttle")
+		}, 1500);
+
+		function throttle(funs, wait, options) {
+			let time
+			return function () {
+				if (!time) {
+					time = new Date()
+				} else {
+					if ((new Date() - time) < wait) {
+						return 
+					}
+				}
+				time = new Date()
+				const args = arguments
+				funs.apply(this, args)
+				setTimeout(() => {
+					funs.apply(this, args)
+				}, wait);
+			}
+		}
+
+		// console.log(throttle())  //result  
+		window.onscroll = fun; //节流函数
+	</script>
+</body>
+
+</html>
