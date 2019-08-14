@@ -18,31 +18,44 @@
         //     return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
         // });
 
-        function memoize(fun, handler) {
+        // function memoize(fun, handler) {
 
-            const memory = function (key) {
-                key = handler == null ? key : handler(key)
-                if (!memory.cache.hasOwnProperty(key)) {
-                    memory.cache[key] = fun.call(this, key)
-                }
-                return memory.cache[key]
-            }
+        //     const memory = function (key) {
+        //         key = handler == null ? key : handler(key)
+        //         if (!memory.cache.hasOwnProperty(key)) {
+        //             memory.cache[key] = fun.call(this, key)
+        //         }
+        //         return memory.cache[key]
+        //     }
 
-            memory.cache = {}
-            return memory
-        }
+        //     memory.cache = {}
+        //     return memory
+        // }
 
-        var hasher = function () {
-            var n = arguments[0];
-            return n + "max";
-        }
+        // var hasher = function () {
+        //     var n = arguments[0];
+        //     return n + "max";
+        // }
 
-        //这个数列从第3项开始,每一项都等于前两项之和.
-        //1 1  2  3 5 8 13 21 34 .....
-        var fibonacci = memoize(function (n) {
-            return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
-        });
-        console.log(fibonacci(10000));
+        // //这个数列从第3项开始,每一项都等于前两项之和.
+        // //1 1  2  3 5 8 13 21 34 .....
+        // var fibonacci = memoize(function (n) {
+        //     return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+        // });
+        // console.log(fibonacci(10000));
+
+//要在underscore把_赋值到全局变量的_之前先保存之前的_变量的内容
+var preUnderscore = root._;
+
+//调用noConflict,就会把之前的_变量的内容放回全局变量中去,就可以直接通过_访问之前的内容了
+_.noConflict = function () {
+    root._ = preUnderscore;
+    return this;
+};
+
+
+
+
 
     </script>
 </body>
