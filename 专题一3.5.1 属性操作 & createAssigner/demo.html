@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script src="key.js"></script>
+		<script>
+			Object.prototype.a = 1;
+			var ret = {name:"max", toString:1};   //Object.prototype.toString
+			//console.log(_.has(ret, "age"));
+			 // console.log(Object.keys(ret));   //name  toString  a
+			 // var name;
+			 // for(name in ret){
+				//  console.log(name)
+			 // }
+			 
+			//console.log(_.invert(ret));
+			console.log(_.extendOwn({}, ret));   //name  toString  a
+			 //IE9 >   toString 不可枚举的属性
+		</script>
+	</body>
+</html>
