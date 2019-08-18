@@ -44,15 +44,31 @@
         // });
         // console.log(fibonacci(10000));
 
-//要在underscore把_赋值到全局变量的_之前先保存之前的_变量的内容
-var preUnderscore = root._;
+        //要在underscore把_赋值到全局变量的_之前先保存之前的_变量的内容
+        // var preUnderscore = root._;
 
-//调用noConflict,就会把之前的_变量的内容放回全局变量中去,就可以直接通过_访问之前的内容了
-_.noConflict = function () {
-    root._ = preUnderscore;
-    return this;
-};
+        //调用noConflict,就会把之前的_变量的内容放回全局变量中去,就可以直接通过_访问之前的内容了
+        // _.noConflict = function () {
+        //     root._ = preUnderscore;
+        //     return this;
+        // };
 
+        // function template(str) {
+        //     const ex = /<%=([\d\D]+?)%>|<%-([\d\D]+?)%>|<%([\d\D]+?)%>/g
+        //     str.replace(ex, function (match, a, b, c) {
+        //         console.log(match);
+        //         console.log(a);
+        //         console.log(b);
+        //         console.log(c);
+        //     })
+        // }
+
+        // template('<%= name %>')
+
+        const fnStr = 'function(a){console.log(a)}'
+        const fn = new Function('return '+fnStr)()
+        fn(2)
+        // const name = new type(arguments);
 
 
 

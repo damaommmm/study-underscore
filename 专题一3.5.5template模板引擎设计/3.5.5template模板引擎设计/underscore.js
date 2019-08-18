@@ -1,7 +1,7 @@
-(function(root) {
+(function (root) {
 	var push = Array.prototype.push;
 
-	var _ = function(obj) {
+	var _ = function (obj) {
 		if (obj instanceof _) {
 			return obj;
 		}
@@ -13,7 +13,7 @@
 	}
 
 	//数组去重
-	_.uniq = _.unique = function(array, isSorted, iteratee, context) {
+	_.uniq = _.unique = function (array, isSorted, iteratee, context) {
 		// 没有传入 isSorted 参数
 		if (!_.isBoolean(isSorted)) {
 			context = iteratee;
@@ -41,22 +41,22 @@
 	};
 
 	//开启链接式的调用
-	_.chain = function(obj) {
+	_.chain = function (obj) {
 		var instance = _(obj);
 		instance._chain = true;
 		return instance;
 	}
 
 	//辅助函数
-	var result = function(instance, obj) {
+	var result = function (instance, obj) {
 		return instance._chain ? _(obj).chain() : obj;
 	}
 
-	_.prototype.value = function() {
+	_.prototype.value = function () {
 		return this._wrapped;
 	}
 
-	_.functions = function(obj) {
+	_.functions = function (obj) {
 		var result = [];
 		var key;
 		for (key in obj) {
@@ -66,7 +66,7 @@
 	}
 
 	//映射
-	_.map = function(obj, iteratee, context) {
+	_.map = function (obj, iteratee, context) {
 		//生成不同功能迭代器
 		var iteratee = cb(iteratee, context);
 		//分辨 obj是数组对象, 还是object对象
@@ -82,7 +82,7 @@
 		return result;
 	}
 
-	var cb = function(iteratee, context, count) {
+	var cb = function (iteratee, context, count) {
 		if (iteratee == null) {
 			return _.identity;
 		}
@@ -93,36 +93,36 @@
 	}
 
 	//optimizeCb优化迭代器
-	var optimizeCb = function(func, context, count) {
+	var optimizeCb = function (func, context, count) {
 		if (context == void 0) {
 			return func;
 		}
 
 		switch (count == null ? 3 : count) {
 			case 1:
-				return function(value) {
+				return function (value) {
 					return func.call(context, value);
 				};
 			case 3:
-				return function(value, index, obj) {
+				return function (value, index, obj) {
 					return func.call(context, value, index, obj);
 				};
 			case 4:
-				return function(memo, value, index, obj) { //回调函数 = 包装 >  迭代器
+				return function (memo, value, index, obj) { //回调函数 = 包装 >  迭代器
 					return func.call(context, memo, value, index, obj); //调用回调
 				};
 		}
 	}
 
-	_.identity = function(value) {
+	_.identity = function (value) {
 		return value;
 	}
 
 	// rest 参数
-	_.restArguments = function(func) {
+	_.restArguments = function (func) {
 		//rest参数位置
 		var startIndex = func.length - 1;
-		return function() {
+		return function () {
 			var length = arguments.length - startIndex,
 				rest = Array(length),
 				index = 0;
@@ -141,10 +141,10 @@
 		}
 	}
 
-	var Ctor = function() {};
+	var Ctor = function () { };
 
 	//Object.create polyfill
-	var baseCreate = function(prototype) {
+	var baseCreate = function (prototype) {
 		if (!_.isObject(prototype)) return {};
 		if (Object.create) return Object.create(prototype);
 		Ctor.prototype = prototype;
@@ -153,9 +153,9 @@
 		return result;
 	};
 
-	var createReduce = function(dir) {
+	var createReduce = function (dir) {
 		//累加
-		var reduce = function(obj, iteratee, memo, init) {
+		var reduce = function (obj, iteratee, memo, init) {
 			//obj  数组对象     keys === undefined
 			//obj  object对象  keys  === [自身可枚举的所有的属性名称]
 			var keys = !_.isArray(obj) && Object.keys(obj),
@@ -172,7 +172,7 @@
 			return memo;
 		}
 		//memo  最终能累加的结果     每一次累加的过程
-		return function(obj, iteratee, memo, context) {
+		return function (obj, iteratee, memo, context) {
 			var init = arguments.length >= 3;
 			//context === undefined   iteratee
 			return reduce(obj, optimizeCb(iteratee, context, 4), memo, init);
@@ -180,23 +180,23 @@
 	}
 	_.reduce = createReduce(1); //_.reduce(obj, function(){}, {});    回调函数  => 迭代器  
 	//predicate  真值检测(重点: 返回值)
-	_.filter = _.select = function(obj, predicate, context) {
+	_.filter = _.select = function (obj, predicate, context) {
 		var results = [];
 		predicate = cb(predicate, context);
-		_.each(obj, function(value, index, list) {
+		_.each(obj, function (value, index, list) {
 			if (predicate(value, index, list)) results.push(value);
 		});
 		return results;
 	};
 
 	//去掉数组中所有的假值   _.identity = function(value){return value};
-	_.compact = function(array) {
+	_.compact = function (array) {
 		return _.filter(array, _.identity);
 	};
 
 
 	// 返回某一个范围内的数值组成的数组 5   stop == 5      start === 0   step === 1
-	_.range = function(start, stop, step) {
+	_.range = function (start, stop, step) {
 		if (stop == null) {
 			stop = start || 0;
 			start = 0;
@@ -207,14 +207,14 @@
 		var length = Math.max(Math.ceil((stop - start) / step), 0);
 		// 返回的数组
 		var range = Array(length);
-		for (var index = 0; index < length; index++, start += step) { //1+2
+		for (var index = 0; index < length; index++ , start += step) { //1+2
 			range[index] = start;
 		}
 		return range;
 	};
 
 
-	_.each = function(target, callback) {
+	_.each = function (target, callback) {
 		var key, i = 0;
 		if (_.isArray(target)) {
 			var length = target.length;
@@ -231,9 +231,9 @@
 	/*
       createReduce  工厂函数生成reduce 
      */
-	var createReduce = function(dir) {
+	var createReduce = function (dir) {
 		//累加
-		var reduce = function(obj, iteratee, memo, init) {
+		var reduce = function (obj, iteratee, memo, init) {
 			var keys = !_.isArray(obj) && _.keys(obj),
 				length = (keys || obj).length,
 				index = dir > 0 ? 0 : length - 1; //确定累加的方向
@@ -248,7 +248,7 @@
 			return memo;
 		}
 		//memo  第一次累加的时候初始化的值 || 数组数据中下标为0的值
-		return function(obj, iteratee, memo, context) {
+		return function (obj, iteratee, memo, context) {
 			var init = arguments.length >= 3;
 			return reduce(obj, optimizeCb(iteratee, context, 4), memo, init);
 		}
@@ -256,19 +256,19 @@
 	_.reduce = createReduce(1);
 
 	//延迟执行
-	_.delay = function(func, wait) {
+	_.delay = function (func, wait) {
 		var args = [].slice.call(arguments, 2);
-		return setTimeout(function() {
+		return setTimeout(function () {
 			func.apply(null, args); //["max"]
 		}, wait);
 	}
 
 	//函数组合
-	_.compose = function() {
+	_.compose = function () {
 		var args = arguments;
 		//处理函数  数据
 		var start = args.length - 1; //倒叙调用
-		return function() {
+		return function () {
 			var i = start;
 			var result = args[i].apply(null, arguments); //args[i] === C     arguments === 2
 			while (i--) {
@@ -288,16 +288,16 @@
 		'`': '&#x60;',
 	};
 
-	var createEscaper = function(map) {
+	var createEscaper = function (map) {
 		//replace
-		var escaper = function(match) {
+		var escaper = function (match) {
 			return escapeMap[match]
 		}
 		var source = '(?:' + Object.keys(map).join("|") + ')';
 		//正则
 		var testRegExp = new RegExp(source, "g"); //
 		//console.log(testRegExp)
-		return function(string) {
+		return function (string) {
 			return testRegExp.test(string) ? string.replace(testRegExp, escaper) : string;
 		}
 	}
@@ -313,7 +313,7 @@
 	wait  指定毫秒
 	options 配置  {leading:false, trailing:false }
 	*/
-	_.throttle = function(func, wait, options) {
+	_.throttle = function (func, wait, options) {
 		var context, args, result;
 		var timeout = null;
 		//上一次在执行回调的时间戳   初始值
@@ -322,12 +322,12 @@
 			options = {};
 		}
 
-		var later = function() {
+		var later = function () {
 			lastTime = options.leading === false ? 0 : _.now();
 			timeout = null;
 			result = func.apply(context, args);
 		}
-		return function() {
+		return function () {
 			//时间戳
 			var now = _.now();
 			//console.log(now)  1558614694319
@@ -361,11 +361,11 @@
     immediate  === true  立即执行处理函数
     */
 
-	_.debounce = function(func, wait, immediate) {
+	_.debounce = function (func, wait, immediate) {
 		//上一次在执行回调的时间戳   第一次执行处理函数初始值
 		var lastTime, timeout, context, args, result;
 
-		var later = function() {
+		var later = function () {
 			//间隔    定时器的回调later方法调用的时间戳 和debounce执行他返回的匿名函数最后一次的时间戳的间隔
 			var last = _.now() - lastTime;
 			console.log(last); //1002
@@ -378,7 +378,7 @@
 				}
 			}
 		}
-		return function() {
+		return function () {
 			context = this;
 			args = arguments;
 			lastTime = _.now();
@@ -398,7 +398,7 @@
 
 	var hasOwnProperty = Object.hasOwnProperty;
 	//属性检测
-	_.has = function(obj, key) {
+	_.has = function (obj, key) {
 		return obj !== null && hasOwnProperty.call(obj, key);
 	}
 
@@ -409,7 +409,7 @@
 		'toString', 'valueOf'
 	];
 	//获取object对象上所有属性的名称(自身可枚举的属性)   
-	_.keys = function(obj) {
+	_.keys = function (obj) {
 		var prop;
 		if (!_.isObject(obj)) {
 			return []
@@ -435,7 +435,7 @@
 	}
 
 	//获取object对象上所有属性的名称(自身+原型链可枚举的属性) 
-	_.allKeys = function(obj) {
+	_.allKeys = function (obj) {
 		var prop;
 		if (!_.isObject(obj)) {
 			return []
@@ -457,7 +457,7 @@
 	}
 
 	//_.values  获取obj对象上所有课枚举属性的值      
-	_.invert = function(obj) {
+	_.invert = function (obj) {
 		var result = {};
 		var keys = _.keys(obj); //属性的名称  key   obj[key]
 		for (var i = 0, length = keys.length; i < length; i++) {
@@ -466,8 +466,8 @@
 		return result;
 	}
 
-	var createAssigner = function(func) {
-		return function(obj) {
+	var createAssigner = function (func) {
+		return function (obj) {
 			var length = arguments.length;
 			if (length < 2 || obj == null) {
 				return obj
@@ -491,7 +491,7 @@
 	_.extendOwn = createAssigner(_.keys); //自身对象上可枚举的属性
 
 	//浅克隆
-	_.clone = function(obj) {
+	_.clone = function (obj) {
 		if (!_.isObject(obj)) {
 			return obj;
 		}
@@ -500,16 +500,16 @@
 	}
 
 	//深克隆
-	_.deepclone = function(obj) {
+	_.deepclone = function (obj) {
 		//待克隆的对象是数组还是object 
 		if (_.isArray(obj)) {
 			//映射到一个新的数组当中  深克隆
-			return _.map(obj, function(elem) {
+			return _.map(obj, function (elem) {
 				return _.isArray(elem) || _.isObject(elem) ? _.deepclone(elem) : elem;
 			});
 		} else if (_.isObject(obj)) {
 			//iteratee(memo, obj[currnteKey], currnteKey, obj) 
-			return _.reduce(obj, function(memo, value, key) {
+			return _.reduce(obj, function (memo, value, key) {
 				memo[key] = _.isArray(value) || _.isObject(value) ? _.deepclone(value) : value;
 				return memo;
 			}, {})
@@ -520,7 +520,7 @@
 
 
 	//白名单
-	_.pick = function(object, oiteratee, context) {
+	_.pick = function (object, oiteratee, context) {
 		var result = {};
 		var iteratee, keys;
 		if (object == null) {
@@ -534,7 +534,7 @@
 			console.log(iteratee)
 		} else {
 			keys = [].slice.call(arguments, 1);
-			iteratee = function(value, key, object) {
+			iteratee = function (value, key, object) {
 				return key in object;
 			}
 		}
@@ -552,46 +552,51 @@
 	}
 
 	//解析模板
-	_.template = function(templateString, settings) {
+	_.template = function (templateString, settings) {
 		//默认规则
 		var RULES = {
 			interpolate: /<%=([\s\S]+?)%>/g,
 			escape: /<%-([\s\S]+?)%>/g,
 			expression: /<%([\s\S]+?)%>/g
 		}
+		//为了给默认规则扩展规则
 		settings = _.extend({}, RULES, settings);
 
-		//解析 
+		//解析 RegExp的好处就是可以传入字符串,可以传递数据 
+		//生成对应的正则规则
 		var matcher = new RegExp([
 			settings.interpolate.source,
 			settings.escape.source,
 			settings.expression.source
 		].join("|"), "g");
 
+
 		var source = "_p+='";
 		var index = 0;
-		templateString.replace(matcher, function(match, interpolate, escape, expression, offset) {
-			source += templateString.slice(index, offset).replace(/\n/g, function(){
-				  return "\\n";
+		templateString.replace(matcher, function (match, interpolate, escape, expression, offset) {
+			source += templateString.slice(index, offset).replace(/\n/g, function () {
+				return "\\n";
 			});
+
 			index = offset + match.length;
 			if (interpolate) { //name  _p+='';
 				source += "'+\n ((_t=(" + interpolate + ")) == null?'':_t)+\n'";
 			} else if (escape) {
 
 			} else if (expression) {   //obj.forEach(function(e, i, a){
-				source +="';\n"+expression+"\n_p+='"
+				source += "';\n" + expression + "\n_p+='"
 			}
 		});
+
 		source += " ';";
 		source = "with(obj){\n" + source + "}\n"
 		//渲染函数    字符串
 		source = "var _t,_p='';" + source + "return _p;\n";
-        console.log(source)
+		console.log(source)
 		//data 传参的问题  预编译
 		var render = new Function("obj", source);
 
-		var template = function(data) {
+		var template = function (data) {
 			return render.call(null, data); //renderString
 		}
 		return template;
@@ -604,27 +609,27 @@
 	*/
 
 	//类型检测
-	_.isArray = function(array) {
+	_.isArray = function (array) {
 		return toString.call(array) === "[object Array]";
 	}
 
-	_.isObject = function(obj) {
+	_.isObject = function (obj) {
 		var type = typeof obj;
 		return type === "function" || type === "object";
 	}
 
-	_.each(["Function", "String", "Number", "Boolean"], function(name) {
-		_["is" + name] = function(obj) {
+	_.each(["Function", "String", "Number", "Boolean"], function (name) {
+		_["is" + name] = function (obj) {
 			return toString.call(obj) === "[object " + name + "]";
 		}
 	});
 
 	//mixin  
-	_.mixin = function(obj) {
-		_.each(_.functions(obj), function(name) {
+	_.mixin = function (obj) {
+		_.each(_.functions(obj), function (name) {
 			var func = obj[name];
 
-			_.prototype[name] = function() {
+			_.prototype[name] = function () {
 				var args = [this._wrapped];
 				push.apply(args, arguments);
 				// instance      去重之后的结果
@@ -635,4 +640,22 @@
 
 	_.mixin(_);
 	root._ = _;
+
+	var _t, _p = ''; with (obj) {
+		_p += '\n		<ul class="list">\n          ';
+		obj.forEach(function (e, i, a) {
+			_p += '\n           ';
+			if (i === 0) {
+				_p += '\n            <li class="last-item">' +
+					((_t = (e.name)) == null ? '' : _t) +
+					'</li>\n           ';
+			} else {
+				_p += '\n            <li>' +
+					((_t = (e.name)) == null ? '' : _t) +
+					'</li>\n         ';
+			}
+		})
+		_p += ' ';
+	}
+	return _p;
 })(this);
