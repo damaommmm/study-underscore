@@ -1,8 +1,11 @@
 (function(global) {
+	//startUp对象
 	var startUp = global.startUp = {
 		version: "1.0.1",
 	}
+	//数据
 	var data = {};
+	//缓存
 	var cache = {};
 	var anonymousMeta = {};
 	//模块的生命周期
@@ -88,25 +91,37 @@
 
 	//构造函数  模块初始化数据
 	function Module(uri, deps) {
+		//uri
 		this.uri = uri;
+		//依赖
 		this.deps = deps || [];
+		//对外暴露的对象
 		this.exports = null;
+		//生命周期状态
 		this.status = 0;
+		//暂时不知道有啥用
 		this._waitings = {};
+		//剩余未加载依赖
 		this._remain = 0;
 	}
 
 	//分析主干 (左子树 | 右子树) 上的依赖项
 	Module.prototype.load = function() {
+		//这个module就是缓存上面的数据
 		var module = this;
+		//会把状态改为加载中
 		module.status = status.LOADING;
+		//获取依赖的绝对路径
 		var uris = module.resolve(); //获取主干上的依赖项
+		// 赋值给remain,就是剩余多少依赖未加载,并保存到len
 		var len = module._remain = uris.length;
 		//console.log(uris)
 		//加载主干上的依赖项(模块)
 		var m;
 		for (var i = 0; i < len; i++) {
+			//遍历需要的依赖,给每个依赖自己也创建一个缓存
 			m = Module.get(uris[i]); //  创建缓存信息
+			//判断该模块是否已经加载,加载了reamin就减一,没加载就把需要加载
 			if (m.status < status.LOADED) {
 				m._waitings[module.uri] = m._waitings[module.uri] || 1;
 			} else {
@@ -245,6 +260,7 @@
 		return cache[uri] || (cache[uri] = new Module(uri, deps));
 	}
 
+	//获取当前uri的缓存模块,并给它新增callback方法,运行load方法
 	Module.use = function(deps, callback, uri) {
 		var module = Module.get(uri, isArray(deps) ? deps : [deps]);
 		//所有模块都加载完毕
@@ -278,6 +294,7 @@
 
 	startUp.use = function(list, callback) {
 		//检测有没有预先加载的模块  
+		//没有就会运行里面的回调
 		Module.preload(function() {
 			Module.use(list, callback, data.cwd + "_use_" + cid()); //虚拟的根目录
 		});

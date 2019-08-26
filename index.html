@@ -65,13 +65,32 @@
 
         // template('<%= name %>')
 
-        const fnStr = 'function(a){console.log(a)}'
-        const fn = new Function('return '+fnStr)()
-        fn(2)
+        // const fnStr = 'function(a){console.log(a)}'
+        // const fn = new Function('return '+fnStr)()
+        // fn(2)
         // const name = new type(arguments);
 
 
+        function fn(require, exports, module) {
+            /* require("c.js")  */
+            var age = "30";
+            var b = require("b.js");
+            exports.age = age;
 
+            /* */
+        }
+
+        var str = fn.toString();
+
+        //加了一个正则去除掉/* */注释,这里用的是?懒惰模式,即使有多个/* */也不会影响
+        var REMOVECOMMENTS_RE = /\/\*[\s\S]*?\*\//g
+        str = str.replace(/\/\*[\s\S]*?\*\//g, '')
+
+        var REQUIRE_RE = /\brequire\s*\(\s*(["'])(.+?)\1\s*\)/g;
+
+        str.replace(REQUIRE_RE, function (context, m1, m2) {
+            console.log(m2)  // => c.js  b.js
+        })
 
     </script>
 </body>
