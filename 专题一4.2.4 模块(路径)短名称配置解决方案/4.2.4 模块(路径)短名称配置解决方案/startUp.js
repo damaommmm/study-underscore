@@ -1,8 +1,23 @@
-(function(global) {
+(function (global) {
+
+
 	var startUp = global.startUp = {
 		version: "1.0.1",
 	}
 	var data = {};    //配置信息
+
+	//写了一个初始化data的方法,会获取到script标签上的data-main,赋值给data.paths
+	function initData(data) {
+		var scriptTags = document.querySelectorAll("script")
+		var scriptTag = scriptTags[scriptTags.length - 1]
+		var dataMain = scriptTag.getAttribute('data-main')
+		data.paths = {
+			"static": dataMain
+		}
+	}
+
+	initData(data)
+
 	var cache = {};
 	var anonymousMeta = {};
 	var status = {
@@ -14,15 +29,15 @@
 		EXECUTED: 6,
 	}
 
-	var isArray = function(obj) {
+	var isArray = function (obj) {
 		return toString.call(obj) === "[object Array]";
 	}
 
-	var isFunction = function(obj) {
+	var isFunction = function (obj) {
 		return toString.call(obj) === "[object Function]";
 	}
 
-	var isString = function(obj) {
+	var isString = function (obj) {
 		return toString.call(obj) === "[object String]";
 	}
 
@@ -31,15 +46,15 @@
 	}
 
 
-	function parseAlias(id) { 
-		var alias = data.alias; 
+	function parseAlias(id) {
+		var alias = data.alias;
 		return alias && isString(alias[id]) ? alias[id] : id;
 	}
 
-	var PATHS_RE = /^([^\/:]+)(\/.+)$/; 
+	var PATHS_RE = /^([^\/:]+)(\/.+)$/;
 
 	function parsePaths(id) {
-		var paths = data.paths; 
+		var paths = data.paths;
 		if (paths && (m = id.match(PATHS_RE)) && isString(paths[m[1]])) {
 			id = paths[m[1]] + m[2]
 		}
@@ -58,28 +73,28 @@
 		return result;
 	}
 
-	var DOT_RE = /\/.\//g;  
+	var DOT_RE = /\/.\//g;
 	function relapath(path) {
 		path = path.replace(DOT_RE, "/");
 		return path;
 	}
-    
+
 	//路径解析  API   b.js   == child
-	startUp.resolve = function(child, parent) {
+	startUp.resolve = function (child, parent) {
 		if (!child) return "";
-		child = parseAlias(child); 
-		child = parsePaths(child); 
-		child = normalize(child); 
-		return addBase(child, parent); 
+		child = parseAlias(child);
+		child = parsePaths(child);
+		child = normalize(child);
+		return addBase(child, parent);
 	}
 
 
 	//
-	startUp.request = function(url, callback) {
+	startUp.request = function (url, callback) {
 		var node = document.createElement("script");
 		node.src = url;
 		document.body.appendChild(node);
-		node.onload = function() {
+		node.onload = function () {
 			callback();
 		}
 	}
@@ -93,19 +108,19 @@
 		this._remain = 0;
 	}
 
-	Module.prototype.load = function() {
-		var m = this; 
+	Module.prototype.load = function () {
+		var m = this;
 		m.status = status.LOADING;
-		var uris = m.resolve(); 
+		var uris = m.resolve();
 		var len = m._remain = uris.length;
 		var seed;
 		for (var i = 0; i < len; i++) {
-			seed = Module.get(uris[i]); 
+			seed = Module.get(uris[i]);
 			seed.e = true;
 			if (seed.status < status.LOADED) {
 				seed._waitings[m.uri] = seed._waitings[m.uri] || 1;
 			} else {
-				m._remain--; 
+				m._remain--;
 			}
 		}
 		if (m._remain == 0) {
@@ -125,11 +140,11 @@
 		}
 	}
 
-	Module.prototype.fetch = function(requestCache) {
+	Module.prototype.fetch = function (requestCache) {
 		var m = this;
 		m.status = status.FETCHED;
 		var uri = m.uri;
-		requestCache[uri] = sendRequest; 
+		requestCache[uri] = sendRequest;
 
 		function sendRequest() {
 			startUp.request(uri, onRequest);
@@ -139,13 +154,13 @@
 			if (anonymousMeta) {
 				m.save(uri, anonymousMeta);
 			}
-			m.load(); 
+			m.load();
 		}
 	}
 
-	Module.prototype.onload = function() {
-		var mod = this; 
-		mod.status = status.LOADED; 
+	Module.prototype.onload = function () {
+		var mod = this;
+		mod.status = status.LOADED;
 		if (mod.callback) {
 			mod.callback();
 		}
@@ -161,7 +176,7 @@
 
 	}
 
-	Module.prototype.save = function(uri, meta) {
+	Module.prototype.save = function (uri, meta) {
 		var mod = Module.get(uri);
 		mod.uri = uri;
 		mod.deps = meta.deps || [];
@@ -169,7 +184,7 @@
 		mod.status = status.SAVED;
 	}
 
-	Module.prototype.exec = function() {
+	Module.prototype.exec = function () {
 		var module = this;
 		if (module.status >= status.EXECUTING) {
 			return module.exports;
@@ -178,10 +193,10 @@
 		var uri = module.uri;
 
 		function require(id) {
-			return Module.get(require.resolve(id)).exec(); 
+			return Module.get(require.resolve(id)).exec();
 		}
 
-		require.resolve = function(id) {
+		require.resolve = function (id) {
 			return startUp.resolve(id, uri);
 		}
 
@@ -192,21 +207,21 @@
 			exports = module.exports;
 		}
 		module.exports = exports;
-		module.status = status.EXECUTED; 
-		return exports; 
+		module.status = status.EXECUTED;
+		return exports;
 	}
 
-	Module.prototype.resolve = function() {
+	Module.prototype.resolve = function () {
 		var mod = this;
-		var ids = mod.deps; 
+		var ids = mod.deps;
 		var uris = [];
 		for (var i = 0; i < ids.length; i++) {
-			uris[i] = startUp.resolve(ids[i], mod.uri); 
+			uris[i] = startUp.resolve(ids[i], mod.uri);
 		}
 		return uris;
 	}
 
-	Module.define = function(factory) {
+	Module.define = function (factory) {
 		var deps;
 		if (isFunction(factory)) {
 			deps = parseDependencies(factory.toString());
@@ -220,17 +235,17 @@
 		anonymousMeta = meta;
 	}
 
-	Module.get = function(uri, deps) {
+	Module.get = function (uri, deps) {
 		return cache[uri] || (cache[uri] = new Module(uri, deps));
 	}
 
-	Module.use = function(deps, callback, uri) {
-		var m = Module.get(uri, isArray(deps) ? deps : [deps]); 
-		m.callback = function() {
-			var exports = []; 
+	Module.use = function (deps, callback, uri) {
+		var m = Module.get(uri, isArray(deps) ? deps : [deps]);
+		m.callback = function () {
+			var exports = [];
 			var uris = m.resolve();
 			for (var i = 0; i < uris.length; i++) {
-				exports[i] = cache[uris[i]].exec(); 
+				exports[i] = cache[uris[i]].exec();
 			}
 			if (callback) {
 				callback.apply(global, exports);
@@ -247,38 +262,40 @@
 
 	//data.preload = [];    预加载的模块
 	data.cwd = document.URL.match(/[^?]*\//)[0];
-	Module.preload = function(callback) {
+	Module.preload = function (callback) {
 		var preload = data.preload || [];   //["c.js"]
-		var length =  preload.length;
-		if (length){   //预先加载的模块
-			Module.use(preload, function(){    //"c.js"
+		var length = preload.length;
+		if (length) {   //预先加载的模块
+			Module.use(preload, function () {    //"c.js"
 				preload.splice(0, length);    //[]
 				callback();
 			}, data.cwd + "_use_" + cid());
-		}else{
+		} else {
 			callback();
 		}
 	};
 
-	startUp.use = function(list, callback) {
-		Module.preload(function() {
-			Module.use(list, callback, data.cwd + "_use_" + cid()); 
+	startUp.use = function (list, callback) {
+		Module.preload(function () {
+			Module.use(list, callback, data.cwd + "_use_" + cid());
 		});
 	}
 
-	startUp.config = function(options) {
+	startUp.config = function (options) {
+		
 		var key, curr;
 		for (key in options) {
 			curr = options[key];
-			data[key] = curr; 
+			data[key] = curr;
 		}
+		
 	}
 
 	var REQUIRE_RE = /\brequire\s*\(\s*(["'])(.+?)\1\s*\)/g;
 
 	function parseDependencies(code) {
 		var ret = []
-		code.replace(REQUIRE_RE, function(m, m1, m2) {
+		code.replace(REQUIRE_RE, function (m, m1, m2) {
 			if (m2) ret.push(m2);
 		});
 		return ret
