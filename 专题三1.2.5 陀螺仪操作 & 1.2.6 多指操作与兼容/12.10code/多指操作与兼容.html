@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>摇一摇</title>
+  <style>
+      #con{
+            width: 300px;
+            height: 300px;
+            line-height: 100px;
+            text-align: center;
+            font-size: 24px;
+            color: black;
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            background: greenyellow;
+      }
+  </style>
+</head>
+<body>
+    <div id="con">
+
+    </div>
+    <script>
+        window.onload = () =>{
+            var con = document.getElementById("con");
+            // 手指触碰屏幕 两个手指或者两个以上
+            con.addEventListener("gesturestart",(e)=>{
+                con.innerHTML = "两个手指";
+            })
+
+            // 手指触碰屏幕 两个手指或者两个以上 位置发生移动
+            con.addEventListener("gesturechange",(e)=>{
+                con.innerHTML = "手指移动了";
+            })
+            // 手指触碰屏幕 两个手指或者两个以上移开某个手指
+            con.addEventListener("gestureend",(e)=>{
+                con.innerHTML = "手指移开了";
+            })
+
+        }
+    </script>
+</body>
+</html>

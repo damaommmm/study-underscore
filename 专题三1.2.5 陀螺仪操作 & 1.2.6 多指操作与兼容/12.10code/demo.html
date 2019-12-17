@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>摇一摇</title>
+  <style>
+      #con{
+            width: 200px;
+            height: 200px;
+            line-height: 100px;
+            text-align: center;
+            font-size: 24px;
+            color: black;
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            background: greenyellow;
+      }
+  </style>
+</head>
+<body>
+    <div id = "con">
+       
+    </div>
+    <script src="./android.js"></script>
+    <script>
+      var con  = document.getElementById("con");
+      gesture(con,{
+          start:function(){
+              alert("触发了多指操作");
+          },
+          change:(event)=>{
+            alert("移动了");
+          }
+      })
+    </script>
+</body>
+</html>

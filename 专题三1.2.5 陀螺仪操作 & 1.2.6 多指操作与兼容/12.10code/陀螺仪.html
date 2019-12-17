@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>陀螺仪</title>
+  <style>
+  </style>
+</head>
+<body>
+    <div>
+       <p id = "p1"></p>
+       <p id = "p2"></p>
+       <p id = "p3"></p>
+    </div>
+    <script>
+        var p1 = document.getElementById("p1");
+        var p2 = document.getElementById("p2");
+        var p3 = document.getElementById("p3");
+
+        // 设备运动事件 重力感应
+        window.addEventListener("devicemotion",(e) => {
+            var motion = e.accelerationIncludingGravity;
+            var x = Math.round(motion.x);
+            var y = Math.round(motion.y);
+            var z = Math.round(motion.z);
+            
+            // 保证安卓与ios兼容性
+            if(!getAdr){
+                x = -x;
+                y = -y;
+                z = -z;
+            }
+
+            p1.innerHTML = "x: " + x;
+            p2.innerHTML = "y: " + y;
+            p3.innerHTML = "z: " + z;
+
+            // g值 约等于10 具体取决于经纬度
+    
+
+        })
+        // 获取机型
+        function getAdr(){
+            var type = navigator.userAgent;
+            var isAndroid = type.indexOf("Android") > -1 || 
+                            type.indexOf("Adr")
+            return isAndroid
+        }
+    </script>
+</body>
+</html>
